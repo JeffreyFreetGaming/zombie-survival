@@ -9,7 +9,14 @@ public class PlayerController : MonoBehaviour
     public int health = 100;
     public int damage = 10;
     public float shootSpeed = .25f;
-    private bool hasShot = false;
+
+    public AudioClip gunshot;
+    public AudioClip reload;
+    public AudioClip emptyClip;
+    public AudioClip playerHit;
+
+    private AudioSource _audioSource;
+    private bool hasShot = false; 
 
     public GameManager gameManager;
 
@@ -18,6 +25,7 @@ public class PlayerController : MonoBehaviour
         //locks cursor to game window
         Cursor.lockState = CursorLockMode.Locked;
         GameManager gameManager = GetComponent<GameManager>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -41,7 +49,7 @@ public class PlayerController : MonoBehaviour
         {
             if (ammo > 0 && hasShot == false)
             {
-                //GetComponent<AudioSource>().PlayOneShot(gunShot, 1);
+                _audioSource.PlayOneShot(gunshot, 0.5f);
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
@@ -66,14 +74,14 @@ public class PlayerController : MonoBehaviour
 
             if (ammo <= 0 && hasShot == false)
             {
-                //GetComponent<AudioSource>().PlayOneShot(emptyClip, 1);
+                GetComponent<AudioSource>().PlayOneShot(emptyClip, 1);
             }
 
         }
 
         if (Input.GetKeyDown("r"))
         {
-            //GetComponent<AudioSource>().PlayOneShot(reload, 1);
+            _audioSource.PlayOneShot(reload, 0.5f);
             ammo = 7;
             gameManager.updateAmmo();
         }
@@ -81,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
     public void takeDamage(int damage)
     {
-        //GetComponent<AudioSource>().PlayOneShot(hitSound, 1);
+        _audioSource.PlayOneShot(playerHit, 1);
         health -= damage;
         gameManager.updateHealth();
         //Debug.Log("Zombie Hit: " + health + " left");
